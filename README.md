@@ -1,32 +1,20 @@
-# SageMaker-Simple-Build
-A simple build demonstrating the use of AWS SageMaker for model training and deployment.
+# SageMaker Scikit-learn Training Example
 
-## Overview
+Train a linear regression model on reproducible synthetic data and save a Joblib artifact. The training script accepts a local output path and also supports SageMaker's `SM_MODEL_DIR` environment variable.
 
-This repository contains a simple example of using AWS SageMaker to train and deploy a machine learning model. The build includes:
+## Run locally
 
-- **Training Script:** A script to train a model using SageMaker's built-in algorithms or custom scripts.
-- **Deployment Script:** A script to deploy the trained model as an endpoint for inference.
+From the repository root, using Python 3 in an activated virtual environment:
 
-## Getting Started
+```sh
+python -m pip install numpy scikit-learn joblib
+python "SageMaker SKLearn estimator.py" --model-dir ./local-model
+python -c "import joblib; model = joblib.load('local-model/model.joblib'); print(model.predict([[0.5, 0.2, 0.8]]))"
+```
 
-To use this build:
+Training writes `local-model/model.joblib`. The final command loads the artifact you just produced and predicts a value close to 3.25. AWS credentials are unnecessary for this local run.
 
-1. **Clone the repository:** `git clone https://github.com/cordz-del/SageMaker-Simple-Build.git`
-2. **Navigate to the repository:** `cd SageMaker-Simple-Build`
-3. **Run the training script:** `python train.py`
-4. **Deploy the model:** `python deploy.py`
+## Source and deployment status
 
-## Requirements
-
-- AWS account with SageMaker access
-- Python 3.x
-- Required libraries (specified in `requirements.txt`)
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the MIT License.
+- [Training script](SageMaker%20SKLearn%20estimator.py) generates 100 synthetic rows, fits a scikit-learn linear regression, and writes the resulting model.
+- [Endpoint deployment sketch](SageMaker%20Python%20SDK%20to%20deploy%20the%20trained%20model%20as%20an%20endpoint.py) illustrates how a model would be deployed with the SageMaker SDK. It references a placeholder S3 artifact, an older framework version, and an inference entry point that would need to be supplied. Confirm the framework and instance availability for the target region and plan endpoint cleanup before adapting it.
